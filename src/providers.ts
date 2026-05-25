@@ -15,11 +15,15 @@ export function autoExecutionProviders(): ExecutionProvider[] {
 
   switch (process.platform) {
     case "darwin":
-      // CoreML targets the Apple GPU / Neural Engine.
-      return ["coreml", "cpu"];
+      // Apple Silicon: CPU (FP32 NEON) wins for these mobile OCR models. CoreML
+      // splits the graph into many partitions (CPU↔ANE conversion per partition)
+      // and measures ~4-5× SLOWER here — so it is opt-in via `EP=coreml`, not
+      // the default. Intel Macs keep CoreML first since they have no NEON edge.
+      return process.arch === "arm64" ? ["cpu"] : ["coreml", "cpu"];
     case "win32":
       // DirectML runs on any DX12 GPU (NVIDIA/AMD/Intel, incl. integrated);
-      // CUDA is tried first for NVIDIA setups that have the toolkit.
+      // CUDA is tried first for NVIDIA setups that have the toolkit. A real
+      // discrete GPU genuinely helps here, so GPU stays the default.
       return ["cuda", "dml", "cpu"];
     default:
       // Linux: CUDA for NVIDIA, otherwise CPU.
