@@ -1,0 +1,23 @@
+{
+  "name": "ppu-paddle-ocr-bench",
+  "version": "1.0.0",
+  "description": "Standalone benchmark for ppu-paddle-ocr with automatic GPU execution-provider detection.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "bench": "bun run src/bench.ts",
+    "warm": "bun run src/warm.ts"
+  },
+  "dependencies": {
+    "ppu-paddle-ocr": "^5.8.0",
+    "onnxruntime-node": "^1.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "bun-types": "^1.3.14",
+    "typescript": "^5.6.0"
+  },
+  "trustedDependencies": [
+    "onnxruntime-node"
+  ]
+}
